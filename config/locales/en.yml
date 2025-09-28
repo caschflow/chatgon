@@ -30,6 +30,30 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+    # === CHATGON BRANDING ===
+  app_name: "ChatGon"
+  company: "MonexGon"
+  tagline: "Customer support platform"
+  powered_by: "Powered by MonexGon"
+  
+  # Application info
+  application:
+    title: "ChatGon - Support Center"
+    description: "MonexGon's comprehensive customer support platform"
+  
+  # Widget
+  widget:
+    title: "Need help?"
+    subtitle: "We're here to support you"
+    company_name: "MonexGon"
+    brand_name: "ChatGon"
+    
+  # Dashboard
+  dashboard:
+    title: "ChatGon Panel"
+    welcome: "Welcome to ChatGon"
+    
+  # === ORIGINAL TRANSLATIONS ===
   hello: 'Hello world'
   inbox:
     reauthorization:
@@ -247,9 +271,9 @@ en:
       email:
         header:
           notifications: 'Notifications'
-          from_with_name: '%{assignee_name} from %{inbox_name} <%{from_email}>'
+          from_with_name: '%{assignee_name} from ChatGon %{inbox_name} <%{from_email}>'
           reply_with_name: '%{assignee_name} from %{inbox_name} <reply+%{reply_email}>'
-          friendly_name: '%{sender_name} from %{business_name} <%{from_email}>'
+          friendly_name: '%{sender_name} from ChatGon %{business_name} <%{from_email}>'
           professional_name: '%{business_name} <%{from_email}>'
       channel_email:
         header:

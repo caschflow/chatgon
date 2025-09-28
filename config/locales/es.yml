@@ -17,6 +17,30 @@
 #To learn more, please read the Rails Internationalization guide
 #available at https://guides.rubyonrails.org/i18n.html.
 es:
+  # === BRANDING CHATGON ===
+  app_name: "ChatGon"
+  company: "MonexGon"
+  tagline: "Plataforma de atención al cliente"
+  powered_by: "Desarrollado por MonexGon"
+  
+  # Información básica de la aplicación
+  application:
+    title: "ChatGon - Centro de Soporte"
+    description: "Plataforma integral de atención al cliente de MonexGon"
+  
+  # Widget de chat
+  widget:
+    title: "¿Necesitas ayuda?"
+    subtitle: "Estamos aquí para apoyarte"
+    company_name: "MonexGon"
+    brand_name: "ChatGon"
+    welcome_message: "¡Hola! ¿En qué podemos ayudarte hoy?"
+    
+  # Dashboard
+  dashboard:
+    title: "Panel ChatGon"
+    welcome: "Bienvenido a ChatGon"
+# === TRADUCCIONES ORIGINALES ===
   hello: 'Hola mundo'
   inbox:
     reauthorization:
@@ -233,9 +257,9 @@ es:
       email:
         header:
           notifications: 'Notificaciones'
-          from_with_name: '%{assignee_name} de %{inbox_name} <%{from_email}>'
+          from_with_name: '%{assignee_name} de ChatGon <%{from_email}>'
           reply_with_name: '%{assignee_name} de %{inbox_name} <reply+%{reply_email}>'
-          friendly_name: '%{sender_name} de %{business_name} <%{from_email}>'
+          friendly_name: '%{sender_name} de MonexGon <%{from_email}>'
           professional_name: '%{business_name} <%{from_email}>'
       channel_email:
         header:
@@ -264,7 +288,7 @@ es:
       description: "Integra Chatwoot con Slack para mantener a tu equipo sincronizado. Esta integración te permite recibir notificaciones de nuevas conversaciones y responder directamente desde la interfaz de Slack."
     webhooks:
       name: 'Webhook'
-      description: 'Los eventos de webhook proporcionan actualizaciones en tiempo real sobre las actividades en tu cuenta de Chatwoot. Puedes suscribirte a los eventos que prefieras y Chatwoot te enviará llamadas HTTP con las actualizaciones.'
+      description: 'Los eventos de webhook proporcionan actualizaciones en tiempo real sobre las actividades en tu cuenta de ChatGon. Puedes suscribirte a los eventos que prefieras y Chatwoot te enviará llamadas HTTP con las actualizaciones.'
     dialogflow:
       name: 'Dialogflow'
       short_description: 'Build chatbots to handle initial queries before transferring to agents.'

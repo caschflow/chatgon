@@ -23,14 +23,14 @@
   deprecated: true
 - name: ip_lookup
   display_name: IP Lookup
-  enabled: false
+  enabled: true
 - name: disable_branding
   display_name: Disable Branding
-  enabled: false
+  enabled: true
   premium: true
 - name: email_continuity_on_api_channel
   display_name: Email Continuity on API Channel
-  enabled: false
+  enabled: true
 - name: help_center
   display_name: Help Center
   enabled: true
@@ -97,13 +97,13 @@
   enabled: true
 - name: custom_reply_email
   display_name: Custom Reply Email
-  enabled: false
+  enabled: true
 - name: custom_reply_domain
   display_name: Custom Reply Domain
-  enabled: false
+  enabled: true
 - name: audit_logs
   display_name: Audit Logs
-  enabled: false
+  enabled: true
   premium: true
 - name: response_bot
   display_name: Response Bot
@@ -125,7 +125,7 @@
   chatwoot_internal: true
 - name: sla
   display_name: SLA
-  enabled: false
+  enabled: true
   premium: true
   help_url: https://chwt.app/hc/sla
 - name: help_center_embedding_search
@@ -135,14 +135,14 @@
   chatwoot_internal: true
 - name: linear_integration
   display_name: Linear Integration
-  enabled: false
+  enabled: true
 - name: captain_integration
   display_name: Captain
-  enabled: false
+  enabled: true
   premium: true
 - name: custom_roles
   display_name: Custom Roles
-  enabled: false
+  enabled: true
   premium: true
 - name: chatwoot_v4
   display_name: Chatwoot V4
@@ -152,7 +152,7 @@
   enabled: true
   deprecated: true
 - name: contact_chatwoot_support_team
-  display_name: Contact Chatwoot Support Team
+  display_name: Contact ChatGon Support Team
   enabled: true
   chatwoot_internal: true
 - name: shopify_integration
@@ -175,7 +175,7 @@
   chatwoot_internal: true
 - name: notion_integration
   display_name: Notion Integration
-  enabled: false
+  enabled: true
 - name: captain_integration_v2
   display_name: Captain V2
   enabled: false
@@ -187,7 +187,7 @@
   deprecated: true
 - name: whatsapp_campaign
   display_name: WhatsApp Campaign
-  enabled: false
+  enabled: true
 - name: crm_v2
   display_name: CRM V2
   enabled: false
@@ -202,12 +202,12 @@
   deprecated: true
 - name: advanced_search
   display_name: Advanced Search
-  enabled: false
+  enabled: true
   premium: true
   chatwoot_internal: true
 - name: saml
   display_name: SAML
-  enabled: false
+  enabled: true
   premium: true
 - name: advanced_search_indexing
   display_name: Advanced Search Indexing
