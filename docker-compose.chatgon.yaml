@@ -107,9 +107,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    ports:
-      - "127.0.0.1:5432:5432"
-
+    
   chatgon-redis:
     image: redis:7-alpine
     container_name: chatgon-redis
@@ -128,9 +126,7 @@ services:
       interval: 10s
       timeout: 3s
       retries: 5
-    ports:
-      - "127.0.0.1:6379:6379"
-
+    
 volumes:
   chatgon_postgres:
     driver: local
