@@ -13,7 +13,7 @@ services:
       - DEFAULT_LOCALE=es
       - ENABLE_ACCOUNT_SIGNUP=api_only
       - CREATE_NEW_ACCOUNT_FROM_DASHBOARD=false
-      - FORCE_SSL=true
+      - FORCE_SSL=false
       # Database
       - POSTGRES_HOST=chatgon-db
       - POSTGRES_USERNAME=${POSTGRES_USERNAME}
