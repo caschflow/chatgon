@@ -11,8 +11,8 @@ services:
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - FRONTEND_URL=${FRONTEND_URL}
       - DEFAULT_LOCALE=es
-      - ENABLE_ACCOUNT_SIGNUP=api_only
-      - CREATE_NEW_ACCOUNT_FROM_DASHBOARD=false
+      - ENABLE_ACCOUNT_SIGNUP=true
+      - CREATE_NEW_ACCOUNT_FROM_DASHBOARD=true
       - FORCE_SSL=false
       # Database
       - POSTGRES_HOST=chatgon-db
