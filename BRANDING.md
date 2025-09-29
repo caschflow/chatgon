@@ -198,16 +198,92 @@ Si no se especifica una variable, se usan estos valores por defecto:
 - `LOGO_THUMBNAIL`: /brand-assets/logo_thumbnail.svg
 - `DISPLAY_MANIFEST`: false
 
+## Estructura de Brand Assets
+
+### Carpeta principal de branding
+
+```
+public/brand-assets/
+├── logo.svg              # Logo principal (claro)
+├── logo_dark.svg         # Logo para modo oscuro
+└── logo_thumbnail.svg    # Thumbnail/favicon del brand
+```
+
+### Iconos del sistema
+
+Los siguientes iconos deben ser generados en formato PNG para soporte multiplataforma:
+
+**Favicons:**
+- `public/favicon-16x16.png` - Favicon pequeño
+- `public/favicon-32x32.png` - Favicon estándar
+- `public/favicon-96x96.png` - Favicon HD
+- `public/favicon-512x512.png` - PWA icon
+
+**Apple Touch Icons:**
+- `public/apple-icon-{57,60,72,76,114,120,144,152,180}x{size}.png`
+
+**Android Icons:**
+- `public/android-icon-{36,48,72,96,144,192}x{size}.png`
+
+**Microsoft Tiles:**
+- `public/ms-icon-{70,150,310}x{size}.png`
+
+### Archivos de configuración
+
+**`public/manifest.json`**
+```json
+{
+  "name": "ChatGon",
+  "short_name": "ChatGon",
+  "theme_color": "#2781F6",
+  "background_color": "#ffffff"
+}
+```
+
+**`public/browserconfig.xml`**
+```xml
+<browserconfig>
+  <msapplication>
+    <tile>
+      <TileColor>#2781F6</TileColor>
+    </tile>
+  </msapplication>
+</browserconfig>
+```
+
+### Reemplazar logos
+
+1. **Logos SVG:**
+   ```bash
+   # Reemplazar los logos en public/brand-assets/
+   cp tu-logo.svg public/brand-assets/logo.svg
+   cp tu-logo-dark.svg public/brand-assets/logo_dark.svg
+   cp tu-logo-thumbnail.svg public/brand-assets/logo_thumbnail.svg
+   ```
+
+2. **Generar iconos PNG:**
+   - Usa herramientas como [RealFaviconGenerator](https://realfavicongenerator.net/)
+   - O genera manualmente con ImageMagick/Sharp
+
+3. **Actualizar colores:**
+   - Modifica `BRAND_COLOR` en `.env`
+   - Los colores en `manifest.json` y `browserconfig.xml` se actualizan automáticamente
+
 ## Archivos Modificados
 
 ### Backend
 - `config/installation_config.yml` - Nueva configuración `BRAND_COLOR`
+- `bin/update_brand_config.rb` - Script de actualización automática
 
 ### Frontend
 - `theme/colors.js` - Color brand usando variable CSS
 - `app/views/layouts/vueapp.html.erb` - Inyección de variable CSS
 - `app/views/widgets/show.html.erb` - Inyección de variable CSS
 - `app/views/survey/responses/show.html.erb` - Inyección de variable CSS
+
+### Assets
+- `public/manifest.json` - Actualizado con branding ChatGon
+- `public/browserconfig.xml` - Actualizado con color de brand
 
 ### Docker
 - `docker-compose.chatgon.yaml` - Servicio `chatgon-brand-setup`
