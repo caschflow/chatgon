@@ -48,27 +48,27 @@ services:
       chatgon-migrate:
         condition: service_completed_successfully
     command: >
-      bash -c "
-      bundle exec rails runner \"
+      sh -c "
+      bundle exec rails runner '
         configs = {
-          'INSTALLATION_NAME' => ENV['INSTALLATION_NAME'],
-          'BRAND_NAME' => ENV['BRAND_NAME'],
-          'BRAND_URL' => ENV['BRAND_URL'],
-          'WIDGET_BRAND_URL' => ENV['WIDGET_BRAND_URL'],
-          'BRAND_COLOR' => ENV['BRAND_COLOR'],
-          'LOGO' => ENV['LOGO'],
-          'LOGO_DARK' => ENV['LOGO_DARK'],
-          'LOGO_THUMBNAIL' => ENV['LOGO_THUMBNAIL']
+          \"INSTALLATION_NAME\" => ENV[\"INSTALLATION_NAME\"],
+          \"BRAND_NAME\" => ENV[\"BRAND_NAME\"],
+          \"BRAND_URL\" => ENV[\"BRAND_URL\"],
+          \"WIDGET_BRAND_URL\" => ENV[\"WIDGET_BRAND_URL\"],
+          \"BRAND_COLOR\" => ENV[\"BRAND_COLOR\"],
+          \"LOGO\" => ENV[\"LOGO\"],
+          \"LOGO_DARK\" => ENV[\"LOGO_DARK\"],
+          \"LOGO_THUMBNAIL\" => ENV[\"LOGO_THUMBNAIL\"]
         }
         configs.each do |key, value|
           config = InstallationConfig.find_by(name: key)
           if config && value.present?
             config.update(value: value)
-            puts \\\"Updated #{key} to #{value}\\\"
+            puts \"Updated #{key} to #{value}\"
           end
         end
-        puts 'Brand configuration completed successfully'
-      \"
+        puts \"Brand configuration completed successfully\"
+      '
       "
     restart: "no"
 
