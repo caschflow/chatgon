@@ -70,6 +70,11 @@
     <% end %>
     <%= vite_client_tag %>
     <%= vite_javascript_tag @application_pack %>
+    <style>
+      :root {
+        --brand-color: <%= @global_config['BRAND_COLOR'] || '#2781F6' %>;
+      }
+    </style>
   </head>
   <body class="text-slate-600">
     <div id="app"></div>

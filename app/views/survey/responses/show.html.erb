@@ -9,6 +9,11 @@
     </script>
     <%= vite_client_tag %>
     <%= vite_javascript_tag 'survey' %>
+    <style>
+      :root {
+        --brand-color: <%= @global_config['BRAND_COLOR'] || '#2781F6' %>;
+      }
+    </style>
   </head>
   <body>
     <div id="app"></div>

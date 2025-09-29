@@ -20,6 +20,58 @@ services:
     command: ['bundle', 'exec', 'rails', 'db:prepare']
     restart: "no"
 
+  # Servicio de configuración de brand (se ejecuta después de migrate)
+  chatgon-brand-setup:
+    image: chatwoot/chatwoot:latest
+    environment:
+      - RAILS_ENV=production
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - POSTGRES_HOST=chatgon-db
+      - POSTGRES_USERNAME=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DATABASE=${POSTGRES_DATABASE}
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@chatgon-redis:6379/0
+      # Branding Configuration
+      - INSTALLATION_NAME=${INSTALLATION_NAME:-ChatGon}
+      - BRAND_NAME=${BRAND_NAME:-ChatGon}
+      - BRAND_URL=${BRAND_URL:-https://chat.monexgon.app}
+      - WIDGET_BRAND_URL=${WIDGET_BRAND_URL:-https://chat.monexgon.app}
+      - BRAND_COLOR=${BRAND_COLOR:-#2781F6}
+      - LOGO=${LOGO:-/brand-assets/logo.svg}
+      - LOGO_DARK=${LOGO_DARK:-/brand-assets/logo_dark.svg}
+      - LOGO_THUMBNAIL=${LOGO_THUMBNAIL:-/brand-assets/logo_thumbnail.svg}
+    depends_on:
+      chatgon-db:
+        condition: service_healthy
+      chatgon-redis:
+        condition: service_healthy
+      chatgon-migrate:
+        condition: service_completed_successfully
+    command: >
+      bash -c "
+      bundle exec rails runner \"
+        configs = {
+          'INSTALLATION_NAME' => ENV['INSTALLATION_NAME'],
+          'BRAND_NAME' => ENV['BRAND_NAME'],
+          'BRAND_URL' => ENV['BRAND_URL'],
+          'WIDGET_BRAND_URL' => ENV['WIDGET_BRAND_URL'],
+          'BRAND_COLOR' => ENV['BRAND_COLOR'],
+          'LOGO' => ENV['LOGO'],
+          'LOGO_DARK' => ENV['LOGO_DARK'],
+          'LOGO_THUMBNAIL' => ENV['LOGO_THUMBNAIL']
+        }
+        configs.each do |key, value|
+          config = InstallationConfig.find_by(name: key)
+          if config && value.present?
+            config.update(value: value)
+            puts \\\"Updated #{key} to #{value}\\\"
+          end
+        end
+        puts 'Brand configuration completed successfully'
+      \"
+      "
+    restart: "no"
+
   chatgon-app:
     image: chatwoot/chatwoot:latest
     container_name: chatgon-app
@@ -51,14 +103,15 @@ services:
       - SMTP_AUTHENTICATION=${SMTP_AUTHENTICATION:-login}
       - SMTP_ENABLE_STARTTLS_AUTO=${SMTP_ENABLE_STARTTLS_AUTO:-true}
       # Branding
-      - INSTALLATION_NAME=ChatGon
-      - BRAND_NAME=ChatGon
-      - BRAND_URL=https://chat.monexgon.app
-      - WIDGET_BRAND_URL=https://chat.monexgon.app
-      - LOGO=/brand-assets/logo.svg
-      - LOGO_DARK=/brand-assets/logo_dark.svg
-      - LOGO_THUMBNAIL=/brand-assets/logo_thumbnail.svg
-      - DISPLAY_MANIFEST=false
+      - INSTALLATION_NAME=${INSTALLATION_NAME:-ChatGon}
+      - BRAND_NAME=${BRAND_NAME:-ChatGon}
+      - BRAND_URL=${BRAND_URL:-https://chat.monexgon.app}
+      - WIDGET_BRAND_URL=${WIDGET_BRAND_URL:-https://chat.monexgon.app}
+      - BRAND_COLOR=${BRAND_COLOR:-#2781F6}
+      - LOGO=${LOGO:-/brand-assets/logo.svg}
+      - LOGO_DARK=${LOGO_DARK:-/brand-assets/logo_dark.svg}
+      - LOGO_THUMBNAIL=${LOGO_THUMBNAIL:-/brand-assets/logo_thumbnail.svg}
+      - DISPLAY_MANIFEST=${DISPLAY_MANIFEST:-false}
       # Storage
       - ACTIVE_STORAGE_SERVICE=local
       # Performance
@@ -79,6 +132,8 @@ services:
       chatgon-redis:
         condition: service_healthy
       chatgon-migrate:
+        condition: service_completed_successfully
+      chatgon-brand-setup:
         condition: service_completed_successfully
     restart: unless-stopped
     command: ['bundle', 'exec', 'rails', 's', '-p', '3000', '-b', '0.0.0.0']
@@ -109,6 +164,8 @@ services:
       chatgon-redis:
         condition: service_healthy
       chatgon-migrate:
+        condition: service_completed_successfully
+      chatgon-brand-setup:
         condition: service_completed_successfully
     restart: unless-stopped
     healthcheck:

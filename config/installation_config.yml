@@ -33,15 +33,20 @@
 - name: BRAND_URL
   value: 'https://chat.monexgon.app'
   display_title: 'Brand URL'
-  description: 'The URL that would be used in emails under the section “Powered By”'
+  description: 'The URL that would be used in emails under the section "Powered By"'
 - name: WIDGET_BRAND_URL
   value: 'https://chat.monexgon.app'
   display_title: 'Widget Brand URL'
-  description: 'The URL that would be used in the widget under the section “Powered By”'
+  description: 'The URL that would be used in the widget under the section "Powered By"'
 - name: BRAND_NAME
   value: 'ChatGon'
   display_title: 'Brand Name'
   description: 'The name that would be used in emails and the widget'
+- name: BRAND_COLOR
+  value: '#2781F6'
+  display_title: 'Brand Color'
+  description: 'The primary brand color used throughout the application (hex format, e.g., #2781F6)'
+  locked: false
 - name: TERMS_URL
   value: 'https://chat.monexgon.app/terms-of-service'
   display_title: 'Terms URL'
