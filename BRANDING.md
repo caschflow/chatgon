@@ -123,6 +123,16 @@ config.update(value: '#FF0000')
 # Los cambios se aplicarán en la próxima recarga de página
 ```
 
+### Para Coolify (Post-Deployment Command)
+
+Si usas Coolify, agrega este comando en la sección de Post-Deployment:
+
+```bash
+docker exec chatgon-app bundle exec rails runner /app/bin/update_brand_config.rb
+```
+
+Este script lee las variables de entorno configuradas en Coolify y actualiza automáticamente la base de datos después de cada deployment.
+
 ## Implementación Técnica
 
 ### Variables CSS
