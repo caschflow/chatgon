@@ -34,9 +34,12 @@ services:
       # Branding
       - INSTALLATION_NAME=ChatGon
       - BRAND_NAME=ChatGon
-      - WIDGET_BRAND_URL=https://chat.monexgon.com
+      - BRAND_URL=https://chat.monexgon.app
+      - WIDGET_BRAND_URL=https://chat.monexgon.app
       - LOGO=/brand-assets/logo.svg
-      - LOGO_THUMBNAIL=/brand-assets/logo-thumb.svg
+      - LOGO_DARK=/brand-assets/logo_dark.svg
+      - LOGO_THUMBNAIL=/brand-assets/logo_thumbnail.svg
+      - DISPLAY_MANIFEST=false
       # Storage
       - ACTIVE_STORAGE_SERVICE=local
       # Performance
