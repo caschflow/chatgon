@@ -123,15 +123,30 @@ config.update(value: '#FF0000')
 # Los cambios se aplicarán en la próxima recarga de página
 ```
 
-### Para Coolify (Post-Deployment Command)
+### Para Coolify
 
-Si usas Coolify, agrega este comando en la sección de Post-Deployment:
+**Configuración automática:**
+
+El servicio `chatgon-brand-setup` en `docker-compose.chatgon.yaml` se ejecuta automáticamente después de las migraciones y aplica la configuración de branding desde las variables de entorno.
+
+**NO necesitas agregar comando post-deployment** - la configuración se aplica automáticamente durante el startup.
+
+**Para actualizar manualmente la configuración:**
+
+Si necesitas cambiar el branding después del deployment inicial, puedes ejecutar:
 
 ```bash
+# Desde la máquina host (fuera de Coolify)
 docker exec chatgon-app bundle exec rails runner /app/bin/update_brand_config.rb
+
+# O reiniciar el servicio de brand setup
+docker-compose -f docker-compose.chatgon.yaml up chatgon-brand-setup
 ```
 
-Este script lee las variables de entorno configuradas en Coolify y actualiza automáticamente la base de datos después de cada deployment.
+**Nota importante para Coolify:**
+- El comando post-deployment en Coolify NO tiene acceso a `docker`
+- La configuración automática via `chatgon-brand-setup` es suficiente
+- Deja el campo de post-deployment **vacío**
 
 ## Implementación Técnica
 
