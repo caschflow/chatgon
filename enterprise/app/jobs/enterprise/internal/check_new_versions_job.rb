@@ -25,6 +25,7 @@ module Enterprise::Internal::CheckNewVersionsJob
   end
 
   def reconcile_premium_config_and_features
-    Internal::ReconcilePlanConfigService.new.perform
+    # Disabled for ChatGon - All features are enabled by default
+    # Internal::ReconcilePlanConfigService.new.perform
   end
 end
