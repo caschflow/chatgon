@@ -1,7 +1,8 @@
 # List of the premium features in EE edition
-- disable_branding
-- audit_logs
-- response_bot
-- sla
-- captain_integration
-- custom_roles
+# Disabled for ChatGon - All features are enabled by default
+# - disable_branding
+# - audit_logs
+# - response_bot
+# - sla
+# - captain_integration
+# - custom_roles
