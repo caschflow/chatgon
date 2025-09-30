@@ -103,3 +103,6 @@ module ChatGon
     encryption_configured?
   end
 end
+
+# ChatGon alias for branding consistency
+ChatGon = Chatwoot
