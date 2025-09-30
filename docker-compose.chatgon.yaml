@@ -49,7 +49,11 @@ services:
         condition: service_completed_successfully
     command: >
       sh -c "
+      echo '=========================================='
+      echo 'ChatGon Brand Setup & Configuration'
+      echo '=========================================='
       bundle exec rails runner '
+        # Configure branding
         configs = {
           \"INSTALLATION_NAME\" => ENV[\"INSTALLATION_NAME\"],
           \"BRAND_NAME\" => ENV[\"BRAND_NAME\"],
@@ -64,10 +68,17 @@ services:
           config = InstallationConfig.find_by(name: key)
           if config && value.present?
             config.update(value: value)
-            puts \"Updated #{key} to #{value}\"
+            puts \"✓ Updated #{key} to #{value}\"
           end
         end
-        puts \"Brand configuration completed successfully\"
+
+        # Clear premium warnings from Redis
+        Redis::Alfred.delete(Redis::Alfred::CHATWOOT_INSTALLATION_CONFIG_RESET_WARNING)
+        puts \"✓ Cleared premium config warnings from Redis\"
+
+        puts \"=========================================\"
+        puts \"✓ Brand configuration completed successfully\"
+        puts \"==========================================\"
       '
       "
     restart: "no"
@@ -85,6 +96,9 @@ services:
       - ENABLE_ACCOUNT_SIGNUP=true
       - CREATE_NEW_ACCOUNT_FROM_DASHBOARD=true
       - FORCE_SSL=false
+      # ChatGon Independent Configuration
+      - DISABLE_TELEMETRY=true
+      - CHATGON_HUB_URL=${FRONTEND_URL}
       # Database
       - POSTGRES_HOST=chatgon-db
       - POSTGRES_USERNAME=${POSTGRES_USERNAME}
@@ -146,6 +160,8 @@ services:
       - NODE_ENV=production
       - INSTALLATION_ENV=docker
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      # ChatGon Independent Configuration
+      - DISABLE_TELEMETRY=true
       # Database
       - POSTGRES_HOST=chatgon-db
       - POSTGRES_USERNAME=${POSTGRES_USERNAME}

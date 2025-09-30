@@ -15,6 +15,7 @@ REDIS_PASSWORD=[password seguro]
 
 ### Aplicación
 FRONTEND_URL=https://chat.monexgon.app
+DEFAULT_LOCALE=es
 
 ### Email (Hostinger)
 MAILER_SENDER_EMAIL=ChatGon <admin@monexgon.app>
@@ -26,7 +27,24 @@ SMTP_PASSWORD=[password del buzón]
 SMTP_AUTHENTICATION=login
 SMTP_ENABLE_STARTTLS_AUTO=true
 
+## Variables de Branding (Obligatorias para ChatGon)
+INSTALLATION_NAME=ChatGon
+BRAND_NAME=ChatGon
+BRAND_URL=https://chat.monexgon.app
+WIDGET_BRAND_URL=https://chat.monexgon.app
+BRAND_COLOR=#2781F6
+LOGO=/brand-assets/logo.svg
+LOGO_DARK=/brand-assets/logo_dark.svg
+LOGO_THUMBNAIL=/brand-assets/logo_thumbnail.svg
+
+## Variables de Independencia (Obligatorias)
+DISABLE_TELEMETRY=true
+CHATGON_HUB_URL=https://chat.monexgon.app
+
 ## Variables Opcionales (con valores por defecto)
 RAILS_MAX_THREADS=5
 SIDEKIQ_CONCURRENCY=10
 ACTIVE_STORAGE_SERVICE=local
+ENABLE_ACCOUNT_SIGNUP=true
+CREATE_NEW_ACCOUNT_FROM_DASHBOARD=true
+FORCE_SSL=false
