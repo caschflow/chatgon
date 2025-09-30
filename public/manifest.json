@@ -1,7 +1,7 @@
 {
-  "name": "ChatGon",
+  "name": "ChatGon - Customer Engagement Platform",
   "short_name": "ChatGon",
-  "description": "Customer engagement platform for businesses",
+  "description": "Plataforma de engagement y comunicación con clientes",
   "icons": [{
     "src": "/android-icon-36x36.png",
     "sizes": "36x36",

@@ -460,7 +460,7 @@ const menuItems = computed(() => {
       <div class="flex items-center min-w-0 gap-2 px-2">
         <div class="grid flex-shrink-0 size-6 place-content-center">
           <img
-            src="/brand-assets/logo_thumbnail.svg"
+            src="/brand-assets/logo-thumbnail.svg"
             alt="ChatGon"
             class="size-4"
           />
