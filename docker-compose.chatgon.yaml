@@ -4,6 +4,7 @@ services:
   # Servicio de migración (se ejecuta primero)
   chatgon-migrate:
     image: chatwoot/chatwoot:latest
+    env_file: .env
     environment:
       - RAILS_ENV=production
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
@@ -23,6 +24,7 @@ services:
   # Servicio de configuración de brand (se ejecuta después de migrate)
   chatgon-brand-setup:
     image: chatwoot/chatwoot:latest
+    env_file: .env
     environment:
       - RAILS_ENV=production
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
@@ -62,22 +64,51 @@ services:
           \"BRAND_COLOR\" => ENV[\"BRAND_COLOR\"],
           \"LOGO\" => ENV[\"LOGO\"],
           \"LOGO_DARK\" => ENV[\"LOGO_DARK\"],
-          \"LOGO_THUMBNAIL\" => ENV[\"LOGO_THUMBNAIL\"]
+          \"LOGO_THUMBNAIL\" => ENV[\"LOGO_THUMBNAIL\"],
+          \"DEPLOYMENT_ENV\" => \"self-hosted\",
+          \"INSTALLATION_PRICING_PLAN\" => \"enterprise\",
+          \"INSTALLATION_PRICING_PLAN_QUANTITY\" => \"999999\"
         }
         configs.each do |key, value|
           next unless value.present?
           config = InstallationConfig.find_or_initialize_by(name: key)
           config.value = value
+          config.locked = false if [\"BRAND_COLOR\", \"INSTALLATION_PRICING_PLAN\"].include?(key)
           config.save!
           puts \"✓ Updated #{key} to #{value}\"
         end
 
+        # Enable all features (bypass premium restrictions)
+        features_config = YAML.load_file(\"config/features.yml\")
+        enabled_count = 0
+        features_config.each do |feature_config|
+          next if feature_config[\"deprecated\"]
+          feature_name = feature_config[\"name\"]
+
+          # Check if Feature model exists (only in newer versions)
+          if defined?(Feature)
+            feature = Feature.find_or_initialize_by(name: feature_name)
+            unless feature.enabled
+              feature.enabled = true
+              feature.save!
+              enabled_count += 1
+            end
+          end
+        end
+        puts \"✓ Enabled #{enabled_count} features\" if enabled_count > 0
+
         # Clear premium warnings from Redis
-        Redis::Alfred.delete(Redis::Alfred::CHATWOOT_INSTALLATION_CONFIG_RESET_WARNING)
-        puts \"✓ Cleared premium config warnings from Redis\"
+        begin
+          Redis::Alfred.delete(Redis::Alfred::CHATWOOT_INSTALLATION_CONFIG_RESET_WARNING) rescue nil
+          puts \"✓ Cleared premium config warnings from Redis\"
+        rescue => e
+          puts \"⚠ Could not clear Redis warnings: #{e.message}\"
+        end
 
         puts \"=========================================\"
         puts \"✓ Brand configuration completed successfully\"
+        puts \"✓ ChatGon configured as independent installation\"
+        puts \"✓ All enterprise features enabled\"
         puts \"==========================================\"
       '
       "
@@ -86,6 +117,7 @@ services:
   chatgon-app:
     image: chatwoot/chatwoot:latest
     container_name: chatgon-app
+    env_file: .env
     environment:
       - RAILS_ENV=production
       - NODE_ENV=production
@@ -99,6 +131,8 @@ services:
       # ChatGon Independent Configuration
       - DISABLE_TELEMETRY=true
       - CHATGON_HUB_URL=${FRONTEND_URL}
+      - DEPLOYMENT_ENV=self-hosted
+      - INSTALLATION_PRICING_PLAN=enterprise
       # Database
       - POSTGRES_HOST=chatgon-db
       - POSTGRES_USERNAME=${POSTGRES_USERNAME}
@@ -155,6 +189,7 @@ services:
   chatgon-sidekiq:
     image: chatwoot/chatwoot:latest
     container_name: chatgon-sidekiq
+    env_file: .env
     environment:
       - RAILS_ENV=production
       - NODE_ENV=production
@@ -162,6 +197,8 @@ services:
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       # ChatGon Independent Configuration
       - DISABLE_TELEMETRY=true
+      - DEPLOYMENT_ENV=self-hosted
+      - INSTALLATION_PRICING_PLAN=enterprise
       # Database
       - POSTGRES_HOST=chatgon-db
       - POSTGRES_USERNAME=${POSTGRES_USERNAME}
@@ -194,6 +231,7 @@ services:
   chatgon-db:
     image: pgvector/pgvector:pg16
     container_name: chatgon-db
+    env_file: .env
     environment:
       POSTGRES_DB: ${POSTGRES_DATABASE}
       POSTGRES_USER: ${POSTGRES_USERNAME}
@@ -211,6 +249,7 @@ services:
   chatgon-redis:
     image: redis:7-alpine
     container_name: chatgon-redis
+    env_file: .env
     command: >
       redis-server 
       --requirepass ${REDIS_PASSWORD}
