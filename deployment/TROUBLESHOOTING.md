@@ -25,9 +25,9 @@ configs = {
   'BRAND_URL' => 'https://chat.monexgon.app',
   'WIDGET_BRAND_URL' => 'https://chat.monexgon.app',
   'BRAND_COLOR' => '#2781F6',
-  'LOGO' => '/brand-assets/logo.svg',
-  'LOGO_DARK' => '/brand-assets/logo_dark.svg',
-  'LOGO_THUMBNAIL' => '/brand-assets/logo_thumbnail.svg'
+  'LOGO' => '/brand-assets/logo-cg.svg',
+  'LOGO_DARK' => '/brand-assets/logo-dark.svg',
+  'LOGO_THUMBNAIL' => '/brand-assets/logo-thumbnail.svg'
 }
 
 configs.each do |key, value|
@@ -132,7 +132,7 @@ El widget tiene su propia configuración de logo.
    ```bash
    docker exec -it chatgon-app bundle exec rails runner "
      config = InstallationConfig.find_or_create_by(name: 'LOGO_THUMBNAIL')
-     config.value = '/brand-assets/logo_thumbnail.svg'
+     config.value = '/brand-assets/logo-thumbnail.svg'
      config.save!
    "
    ```

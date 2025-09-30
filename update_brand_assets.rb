@@ -13,9 +13,9 @@ brand_configs = {
   'BRAND_URL' => ENV.fetch('FRONTEND_URL', 'https://chat.monexgon.app'),
   'WIDGET_BRAND_URL' => ENV.fetch('FRONTEND_URL', 'https://chat.monexgon.app'),
   'BRAND_COLOR' => '#2781F6',
-  'LOGO' => '/brand-assets/logo.svg',
-  'LOGO_DARK' => '/brand-assets/logo_dark.svg',
-  'LOGO_THUMBNAIL' => '/brand-assets/logo_thumbnail.svg'
+  'LOGO' => '/brand-assets/logo-cg.svg',
+  'LOGO_DARK' => '/brand-assets/logo-dark.svg',
+  'LOGO_THUMBNAIL' => '/brand-assets/logo-thumbnail.svg'
 }
 
 # Update each configuration
