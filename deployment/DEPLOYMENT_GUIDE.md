@@ -33,7 +33,7 @@ Una vez completado el deploy, necesitas ejecutar el script de limpieza:
 2. Seleccionar el contenedor **Rails** (app principal)
 3. Ejecutar:
 ```bash
-bundle exec rails runner clear_premium_warning.rb
+bundle exec rails runner clear_premium_warning.
 ```
 
 #### Método 2: Usar Docker Exec
@@ -45,7 +45,7 @@ docker ps | grep chatgon
 # Ejecuta el script
 docker exec -it <CONTAINER_ID> bundle exec rails runner clear_premium_warning.rb
 ```
-
+rb
 #### Método 3: Configurar como Post-Deploy Hook
 Agregar al archivo de configuración de Coolify o Docker:
 

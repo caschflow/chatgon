@@ -65,11 +65,11 @@ services:
           \"LOGO_THUMBNAIL\" => ENV[\"LOGO_THUMBNAIL\"]
         }
         configs.each do |key, value|
-          config = InstallationConfig.find_by(name: key)
-          if config && value.present?
-            config.update(value: value)
-            puts \"✓ Updated #{key} to #{value}\"
-          end
+          next unless value.present?
+          config = InstallationConfig.find_or_initialize_by(name: key)
+          config.value = value
+          config.save!
+          puts \"✓ Updated #{key} to #{value}\"
         end
 
         # Clear premium warnings from Redis
