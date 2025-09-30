@@ -1,6 +1,8 @@
-# TODO: lets use HTTParty instead of RestClient
+# ChatGon Hub - Disabled external connections
+# This file maintains compatibility with the original codebase structure
+# but disables all external connections to Chatwoot services
 class ChatwootHub
-  BASE_URL = ENV.fetch('CHATWOOT_HUB_URL', 'https://hub.2.chatwoot.com')
+  BASE_URL = ENV.fetch('CHATGON_HUB_URL', 'https://chat.monexgon.app')
   PING_URL = "#{BASE_URL}/ping".freeze
   REGISTRATION_URL = "#{BASE_URL}/instances".freeze
   PUSH_NOTIFICATION_URL = "#{BASE_URL}/send_push".freeze
@@ -32,9 +34,9 @@ class ChatwootHub
 
   def self.support_config
     {
-      support_website_token: InstallationConfig.find_by(name: 'CHATWOOT_SUPPORT_WEBSITE_TOKEN')&.value,
-      support_script_url: InstallationConfig.find_by(name: 'CHATWOOT_SUPPORT_SCRIPT_URL')&.value,
-      support_identifier_hash: InstallationConfig.find_by(name: 'CHATWOOT_SUPPORT_IDENTIFIER_HASH')&.value
+      support_website_token: InstallationConfig.find_by(name: 'CHATGON_SUPPORT_WEBSITE_TOKEN')&.value,
+      support_script_url: InstallationConfig.find_by(name: 'CHATGON_SUPPORT_SCRIPT_URL')&.value,
+      support_identifier_hash: InstallationConfig.find_by(name: 'CHATGON_SUPPORT_IDENTIFIER_HASH')&.value
     }
   end
 
@@ -65,56 +67,32 @@ class ChatwootHub
   end
 
   def self.sync_with_hub
-    begin
-      info = instance_config
-      info = info.merge(instance_metrics) unless ENV['DISABLE_TELEMETRY']
-      response = RestClient.post(PING_URL, info.to_json, { content_type: :json, accept: :json })
-      parsed_response = JSON.parse(response)
-    rescue *ExceptionList::REST_CLIENT_EXCEPTIONS => e
-      Rails.logger.error "Exception: #{e.message}"
-    rescue StandardError => e
-      ChatwootExceptionTracker.new(e).capture_exception
-    end
-    parsed_response
+    # Disabled for ChatGon - No external telemetry
+    Rails.logger.info "ChatGon: Hub sync disabled"
+    nil
   end
 
   def self.register_instance(company_name, owner_name, owner_email)
-    info = { company_name: company_name, owner_name: owner_name, owner_email: owner_email, subscribed_to_mailers: true }
-    RestClient.post(REGISTRATION_URL, info.merge(instance_config).to_json, { content_type: :json, accept: :json })
-  rescue *ExceptionList::REST_CLIENT_EXCEPTIONS => e
-    Rails.logger.error "Exception: #{e.message}"
-  rescue StandardError => e
-    ChatwootExceptionTracker.new(e).capture_exception
+    # Disabled for ChatGon - No external registration
+    Rails.logger.info "ChatGon: Instance registration disabled for #{company_name}"
+    nil
   end
 
   def self.send_push(fcm_options)
-    info = { fcm_options: fcm_options }
-    RestClient.post(PUSH_NOTIFICATION_URL, info.merge(instance_config).to_json, { content_type: :json, accept: :json })
-  rescue *ExceptionList::REST_CLIENT_EXCEPTIONS => e
-    Rails.logger.error "Exception: #{e.message}"
-  rescue StandardError => e
-    ChatwootExceptionTracker.new(e).capture_exception
+    # Disabled for ChatGon - Use local push notification system
+    Rails.logger.info "ChatGon: External push disabled, use local FCM"
+    nil
   end
 
   def self.get_captain_settings(account)
-    info = {
-      installation_identifier: installation_identifier,
-      chatwoot_account_id: account.id,
-      account_name: account.name
-    }
-    HTTParty.post(CAPTAIN_ACCOUNTS_URL,
-                  body: info.to_json,
-                  headers: { 'Content-Type' => 'application/json', 'Accept' => 'application/json' })
+    # Disabled for ChatGon - Use local AI settings
+    Rails.logger.info "ChatGon: Captain settings managed locally for account #{account.id}"
+    nil
   end
 
   def self.emit_event(event_name, event_data)
-    return if ENV['DISABLE_TELEMETRY']
-
-    info = { event_name: event_name, event_data: event_data }
-    RestClient.post(EVENTS_URL, info.merge(instance_config).to_json, { content_type: :json, accept: :json })
-  rescue *ExceptionList::REST_CLIENT_EXCEPTIONS => e
-    Rails.logger.error "Exception: #{e.message}"
-  rescue StandardError => e
-    ChatwootExceptionTracker.new(e).capture_exception
+    # Disabled for ChatGon - No external telemetry
+    Rails.logger.debug "ChatGon: Event #{event_name} logged locally (telemetry disabled)"
+    nil
   end
 end

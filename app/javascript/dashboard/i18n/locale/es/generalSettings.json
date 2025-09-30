@@ -1,10 +1,10 @@
 {
   "GENERAL_SETTINGS": {
     "LIMIT_MESSAGES": {
-      "CONVERSATION": "You have exceeded the conversation limit. Hacker plan allows only 500 conversations.",
-      "INBOXES": "You have exceeded the inbox limit. Hacker plan only supports website live-chat. Additional inboxes like email, WhatsApp etc. require a paid plan.",
-      "AGENTS": "Has superado el límite de agentes. Tu plan solo permite {allowedAgents} agentes.",
-      "NON_ADMIN": "Please contact your administrator to upgrade the plan and continue using all features."
+      "CONVERSATION": "Has superado el límite de conversaciones. Por favor contacta al administrador.",
+      "INBOXES": "Has superado el límite de bandejas de entrada. Por favor contacta al administrador.",
+      "AGENTS": "Has superado el límite de agentes. Tu configuración permite {allowedAgents} agentes.",
+      "NON_ADMIN": "Por favor contacta a tu administrador para ajustar los límites del sistema."
     },
     "TITLE": "Configuración de la cuenta",
     "SUBMIT": "Actualizar ajustes",

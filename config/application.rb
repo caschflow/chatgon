@@ -58,7 +58,7 @@ module ChatGon
     config.generators.javascripts = false
     config.generators.stylesheets = false
 
-    # Custom chatwoot configurations
+    # Custom ChatGon configurations
     config.x = config_for(:app).with_indifferent_access
 
     # https://stackoverflow.com/questions/72970170/upgrading-to-rails-6-1-6-1-causes-psychdisallowedclass-tried-to-load-unspecif
@@ -85,9 +85,7 @@ module ChatGon
   end
 
   def self.redis_ssl_verify_mode
-    # Introduced this method to fix the issue in heroku where redis connections fail for redis 6
-    # ref: https://github.com/chatwoot/chatwoot/issues/2420
-    #
+    # Redis SSL verification mode configuration
     # unless the redis verify mode is explicitly specified as none, we will fall back to the default 'verify peer'
     # ref: https://www.rubydoc.info/stdlib/openssl/OpenSSL/SSL/SSLContext#DEFAULT_PARAMS-constant
     ENV['REDIS_OPENSSL_VERIFY_MODE'] == 'none' ? OpenSSL::SSL::VERIFY_NONE : OpenSSL::SSL::VERIFY_PEER
