@@ -56,24 +56,28 @@ ENV PATH="$PNPM_HOME:$PATH"
 
 WORKDIR /app
 
-COPY Gemfile Gemfile.lock ./
-
-# natively compile grpc and protobuf to support alpine musl (dialogflow-docker workflow)
-# https://github.com/googleapis/google-cloud-ruby/issues/13306
-# adding xz as nokogiri was failing to build libxml
-# https://github.com/chatwoot/chatwoot/issues/4045
+# Install build dependencies first (rarely changes)
 RUN apk update && apk add --no-cache build-base musl ruby-full ruby-dev gcc make musl-dev openssl openssl-dev g++ linux-headers xz vips
+
+# Copy only dependency files first for better caching
+COPY Gemfile Gemfile.lock ./
+COPY package.json pnpm-lock.yaml ./
+
+# Configure bundle
 RUN bundle config set --local force_ruby_platform true
 
-# Do not install development or test gems in production
-RUN if [ "$RAILS_ENV" = "production" ]; then \
+# Install Ruby gems (cached unless Gemfile changes)
+RUN --mount=type=cache,target=/gems/cache \
+  if [ "$RAILS_ENV" = "production" ]; then \
   bundle config set without 'development test'; bundle install -j 4 -r 3; \
   else bundle install -j 4 -r 3; \
   fi
 
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm i
+# Install Node packages (cached unless package.json changes)
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
+  pnpm i
 
+# Copy application code last (changes frequently)
 COPY . /app
 
 # creating a log directory so that image wont fail when RAILS_LOG_TO_STDOUT is false
