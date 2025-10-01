@@ -3,7 +3,7 @@ FROM node:23-alpine as node
 FROM ruby:3.4.4-alpine3.21 AS pre-builder
 
 ARG NODE_VERSION="23.7.0"
-ARG PNPM_VERSION="10.2.0"
+ARG PNPM_VERSION="10.17.1"
 ENV NODE_VERSION=${NODE_VERSION}
 ENV PNPM_VERSION=${PNPM_VERSION}
 
@@ -82,7 +82,7 @@ RUN mkdir -p /app/log
 
 # generate production assets if production environment
 RUN if [ "$RAILS_ENV" = "production" ]; then \
-  SECRET_KEY_BASE=precompile_placeholder RAILS_LOG_TO_STDOUT=enabled NODE_OPTIONS="--max-old-space-size=4096" bundle exec rake assets:precompile \
+  SECRET_KEY_BASE=precompile_placeholder RAILS_LOG_TO_STDOUT=enabled bundle exec rake assets:precompile \
   && rm -rf spec node_modules tmp/cache; \
   fi
 
@@ -99,7 +99,7 @@ RUN rm -rf /gems/ruby/3.4.0/cache/*.gem \
 FROM ruby:3.4.4-alpine3.21
 
 ARG NODE_VERSION="23.7.0"
-ARG PNPM_VERSION="10.2.0"
+ARG PNPM_VERSION="10.17.1"
 ENV NODE_VERSION=${NODE_VERSION}
 ENV PNPM_VERSION=${PNPM_VERSION}
 
