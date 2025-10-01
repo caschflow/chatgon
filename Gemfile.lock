@@ -160,7 +160,7 @@ GEM
     benchmark (0.4.1)
     bigdecimal (3.2.2)
     bindex (0.8.1)
-    bootsnap (1.16.0)
+    bootsnap (1.18.4)
       msgpack (~> 1.2)
     brakeman (5.4.1)
     browser (5.3.1)
