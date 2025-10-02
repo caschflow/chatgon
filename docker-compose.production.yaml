@@ -7,6 +7,122 @@ services:
       dockerfile: docker/Dockerfile
     volumes:
       - storage_data:/app/storage
+      - public_data:/app/public
+
+  # Servicio de migración (se ejecuta primero)
+  migrate:
+    <<: *base
+    environment:
+      - RAILS_ENV=production
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE:?Secret key base required}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DATABASE=${POSTGRES_DATABASE:-chatwoot}
+      - POSTGRES_USERNAME=${POSTGRES_USERNAME:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?Database password required}
+      - REDIS_URL=redis://redis:6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: ['bundle', 'exec', 'rails', 'db:prepare']
+    restart: "no"
+
+  # Servicio de configuración de brand (se ejecuta después de migrate)
+  brand-setup:
+    <<: *base
+    environment:
+      - RAILS_ENV=production
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE:?Secret key base required}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DATABASE=${POSTGRES_DATABASE:-chatwoot}
+      - POSTGRES_USERNAME=${POSTGRES_USERNAME:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?Database password required}
+      - REDIS_URL=redis://redis:6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      # Branding Configuration
+      - INSTALLATION_NAME=${INSTALLATION_NAME:-ChatGon}
+      - BRAND_NAME=${BRAND_NAME:-ChatGon}
+      - BRAND_URL=${BRAND_URL}
+      - WIDGET_BRAND_URL=${WIDGET_BRAND_URL}
+      - BRAND_COLOR=${BRAND_COLOR:-#2781F6}
+      - LOGO=${LOGO:-/brand-assets/logo-cg.svg}
+      - LOGO_DARK=${LOGO_DARK:-/brand-assets/logo-dark.svg}
+      - LOGO_THUMBNAIL=${LOGO_THUMBNAIL:-/brand-assets/logo-thumbnail.svg}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    command: >
+      sh -c "
+      echo '=========================================='
+      echo 'ChatGon Brand Setup & Configuration'
+      echo '=========================================='
+      bundle exec rails runner '
+        # Configure branding
+        configs = {
+          \"INSTALLATION_NAME\" => ENV[\"INSTALLATION_NAME\"],
+          \"BRAND_NAME\" => ENV[\"BRAND_NAME\"],
+          \"BRAND_URL\" => ENV[\"BRAND_URL\"] || ENV[\"FRONTEND_URL\"],
+          \"WIDGET_BRAND_URL\" => ENV[\"WIDGET_BRAND_URL\"] || ENV[\"FRONTEND_URL\"],
+          \"BRAND_COLOR\" => ENV[\"BRAND_COLOR\"],
+          \"LOGO\" => ENV[\"LOGO\"],
+          \"LOGO_DARK\" => ENV[\"LOGO_DARK\"],
+          \"LOGO_THUMBNAIL\" => ENV[\"LOGO_THUMBNAIL\"],
+          \"DEPLOYMENT_ENV\" => \"self-hosted\",
+          \"INSTALLATION_PRICING_PLAN\" => \"enterprise\",
+          \"INSTALLATION_PRICING_PLAN_QUANTITY\" => \"999999\"
+        }
+        configs.each do |key, value|
+          next unless value.present?
+          config = InstallationConfig.find_or_initialize_by(name: key)
+          config.value = value
+          config.locked = false if [\"BRAND_COLOR\", \"INSTALLATION_PRICING_PLAN\"].include?(key)
+          config.save!
+          puts \"✓ Updated #{key} to #{value}\"
+        end
+
+        # Enable all features (bypass premium restrictions)
+        features_config = YAML.load_file(\"config/features.yml\")
+        enabled_count = 0
+        features_config.each do |feature_config|
+          next if feature_config[\"deprecated\"]
+          feature_name = feature_config[\"name\"]
+
+          # Check if Feature model exists (only in newer versions)
+          if defined?(Feature)
+            feature = Feature.find_or_initialize_by(name: feature_name)
+            unless feature.enabled
+              feature.enabled = true
+              feature.save!
+              enabled_count += 1
+            end
+          end
+        end
+        puts \"✓ Enabled #{enabled_count} features\" if enabled_count > 0
+
+        # Clear premium warnings from Redis
+        begin
+          Redis::Alfred.delete(Redis::Alfred::CHATWOOT_INSTALLATION_CONFIG_RESET_WARNING) rescue nil
+          puts \"✓ Cleared premium config warnings from Redis\"
+        rescue => e
+          puts \"⚠ Could not clear Redis warnings: #{e.message}\"
+        end
+
+        puts \"=========================================\"
+        puts \"✓ Brand configuration completed successfully\"
+        puts \"✓ ChatGon configured as independent installation\"
+        puts \"✓ All enterprise features enabled\"
+        puts \"==========================================\"
+      '
+      "
+    restart: "no"
 
   rails:
     <<: *base
@@ -15,6 +131,10 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      brand-setup:
+        condition: service_completed_successfully
     ports:
       - '3000:3000'
     environment:
@@ -25,6 +145,16 @@ services:
       - RAILS_LOG_TO_STDOUT=true
       - SECRET_KEY_BASE=${SECRET_KEY_BASE:?Secret key base required}
       - FRONTEND_URL=${FRONTEND_URL:?Frontend URL required}
+      - DEFAULT_LOCALE=${DEFAULT_LOCALE:-es}
+      - ENABLE_ACCOUNT_SIGNUP=${ENABLE_ACCOUNT_SIGNUP:-true}
+      - CREATE_NEW_ACCOUNT_FROM_DASHBOARD=${CREATE_NEW_ACCOUNT_FROM_DASHBOARD:-true}
+      - FORCE_SSL=false
+
+      # ChatGon Independent Configuration
+      - DISABLE_TELEMETRY=true
+      - CHATGON_HUB_URL=${FRONTEND_URL}
+      - DEPLOYMENT_ENV=self-hosted
+      - INSTALLATION_PRICING_PLAN=enterprise
 
       # PostgreSQL
       - POSTGRES_HOST=postgres
@@ -37,9 +167,39 @@ services:
       - REDIS_URL=redis://redis:6379
       - REDIS_PASSWORD=${REDIS_PASSWORD}
 
-      # Optional
-      - RAILS_MAX_THREADS=${RAILS_MAX_THREADS:-5}
+      # Email (Optional)
+      - MAILER_SENDER_EMAIL=${MAILER_SENDER_EMAIL}
+      - SMTP_DOMAIN=${SMTP_DOMAIN}
+      - SMTP_ADDRESS=${SMTP_ADDRESS}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - SMTP_AUTHENTICATION=${SMTP_AUTHENTICATION:-login}
+      - SMTP_ENABLE_STARTTLS_AUTO=${SMTP_ENABLE_STARTTLS_AUTO:-true}
+
+      # Branding
       - INSTALLATION_NAME=${INSTALLATION_NAME:-ChatGon}
+      - BRAND_NAME=${BRAND_NAME:-ChatGon}
+      - BRAND_URL=${BRAND_URL}
+      - WIDGET_BRAND_URL=${WIDGET_BRAND_URL}
+      - BRAND_COLOR=${BRAND_COLOR:-#2781F6}
+      - LOGO=${LOGO:-/brand-assets/logo-cg.svg}
+      - LOGO_DARK=${LOGO_DARK:-/brand-assets/logo-dark.svg}
+      - LOGO_THUMBNAIL=${LOGO_THUMBNAIL:-/brand-assets/logo-thumbnail.svg}
+      - DISPLAY_MANIFEST=${DISPLAY_MANIFEST:-false}
+
+      # Storage
+      - ACTIVE_STORAGE_SERVICE=local
+
+      # Performance
+      - RAILS_MAX_THREADS=${RAILS_MAX_THREADS:-5}
+      - SIDEKIQ_CONCURRENCY=${SIDEKIQ_CONCURRENCY:-10}
+
+      # API Configuration
+      - API_RATE_LIMIT=${API_RATE_LIMIT:-1000}
+      - CORS_ORIGINS=${FRONTEND_URL}
+      - API_ACCESS_TOKEN_EXPIRY=${API_ACCESS_TOKEN_EXPIRY:-24}
+
     entrypoint: /usr/local/entrypoints/rails.sh
     command: ['bundle', 'exec', 'rails', 's', '-p', '3000', '-b', '0.0.0.0']
     restart: unless-stopped
@@ -51,14 +211,23 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      brand-setup:
+        condition: service_completed_successfully
     environment:
       # Rails
-      - NODE_ENV=production
       - RAILS_ENV=production
+      - NODE_ENV=production
       - INSTALLATION_ENV=docker
       - RAILS_LOG_TO_STDOUT=true
       - SECRET_KEY_BASE=${SECRET_KEY_BASE:?Secret key base required}
       - FRONTEND_URL=${FRONTEND_URL:?Frontend URL required}
+
+      # ChatGon Independent Configuration
+      - DISABLE_TELEMETRY=true
+      - DEPLOYMENT_ENV=self-hosted
+      - INSTALLATION_PRICING_PLAN=enterprise
 
       # PostgreSQL
       - POSTGRES_HOST=postgres
@@ -75,6 +244,11 @@ services:
       - SIDEKIQ_CONCURRENCY=${SIDEKIQ_CONCURRENCY:-10}
     command: ['bundle', 'exec', 'sidekiq', '-C', 'config/sidekiq.yml']
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "sidekiq"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   postgres:
     image: pgvector/pgvector:pg16
@@ -82,9 +256,10 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=${POSTGRES_DATABASE:-chatwoot}
-      - POSTGRES_USER=${POSTGRES_USERNAME:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?Database password required}
+      POSTGRES_DB: ${POSTGRES_DATABASE:-chatwoot}
+      POSTGRES_USER: ${POSTGRES_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Database password required}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USERNAME:-postgres}"]
       interval: 10s
@@ -96,7 +271,11 @@ services:
     restart: unless-stopped
     command: >
       sh -c "redis-server
-      ${REDIS_PASSWORD:+--requirepass ${REDIS_PASSWORD}}"
+      ${REDIS_PASSWORD:+--requirepass ${REDIS_PASSWORD}}
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru"
     volumes:
       - redis_data:/data
     healthcheck:
@@ -106,6 +285,16 @@ services:
       retries: 5
 
 volumes:
-  storage_data:
   postgres_data:
+    driver: local
   redis_data:
+    driver: local
+  storage_data:
+    driver: local
+  public_data:
+    driver: local
+
+networks:
+  default:
+    name: chatgon-network
+    driver: bridge
