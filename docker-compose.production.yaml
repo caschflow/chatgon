@@ -137,6 +137,13 @@ services:
         condition: service_completed_successfully
     ports:
       - '3000:3000'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.chatgon.rule=Host(`chat.monexgon.app`)"
+      - "traefik.http.routers.chatgon.entrypoints=websecure"
+      - "traefik.http.routers.chatgon.tls=true"
+      - "traefik.http.routers.chatgon.tls.certresolver=letsencrypt"
+      - "traefik.http.services.chatgon.loadbalancer.server.port=3000"
     environment:
       # Rails
       - NODE_ENV=production
