@@ -83,7 +83,6 @@ export default defineConfig({
       survey: path.resolve('./app/javascript/survey'),
       widget: path.resolve('./app/javascript/widget'),
       assets: path.resolve('./app/javascript/dashboard/assets'),
-      '/brand-assets': path.resolve('./public/brand-assets'),
     },
   },
   test: {
