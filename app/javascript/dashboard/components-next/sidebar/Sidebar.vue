@@ -475,7 +475,7 @@ const menuItems = computed(() => {
       <div class="flex gap-2 px-2">
         <RouterLink
           :to="{ name: 'search' }"
-          class="flex items-center w-full gap-2 px-2 py-1 rounded-lg h-7 outline outline-1 outline-n-weak bg-n-solid-3 dark:bg-n-black/30"
+          class="flex items-center w-full gap-2 px-2 py-1 rounded-lg h-7 outline outline-1 outline-n-weak bg-n-solid-3 dark:bg-black/30"
         >
           <span class="flex-shrink-0 i-lucide-search size-4 text-n-slate-11" />
           <span class="flex-grow text-left">
@@ -493,7 +493,7 @@ const menuItems = computed(() => {
               icon="i-lucide-pen-line"
               color="slate"
               size="sm"
-              class="!h-7 !bg-n-solid-3 dark:!bg-n-black/30 !outline-n-weak !text-n-slate-11"
+              class="!h-7 !bg-n-solid-3 dark:!bg-black/30 !outline-n-weak !text-n-slate-11"
               @click="toggle"
             />
           </template>

@@ -70,7 +70,7 @@
       }
 
       &.multiselect__option--highlight:hover {
-        @apply bg-n-brand/10 text-n-slate-12;
+        @apply bg-n-iris-3 text-n-slate-12;
 
         &::after {
           @apply bg-transparent text-center text-n-slate-12;
@@ -82,7 +82,7 @@
       }
 
       &.multiselect__option--selected {
-        @apply bg-n-brand/20 text-n-slate-12;
+        @apply bg-n-iris-4 text-n-slate-12;
 
         &::after {
           @apply bg-transparent;

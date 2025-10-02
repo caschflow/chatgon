@@ -145,7 +145,7 @@ export default {
             role="button"
             class="flex rounded-md h-5 w-full items-center justify-between px-1.5 py-0.5 gap-2 whitespace-nowrap"
             :class="{
-              'bg-n-brand/10 dark:bg-n-brand/10': activeSort === option.key,
+              'bg-n-iris-3 dark:bg-n-iris-3': activeSort === option.key,
             }"
             @click.stop="onSortOptionClick(option)"
           >

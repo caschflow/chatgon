@@ -102,7 +102,7 @@ const STYLE_CONFIG = {
       solid:
         'bg-n-brand text-white hover:enabled:brightness-110 focus-visible:brightness-110 outline-transparent',
       faded:
-        'bg-n-brand/10 text-n-blue-text hover:enabled:bg-n-brand/20 focus-visible:bg-n-brand/20 outline-transparent',
+        'bg-n-iris-3 text-n-blue-text hover:enabled:bg-n-iris-4 focus-visible:bg-n-iris-4 outline-transparent',
       outline: 'text-n-blue-text outline-n-brand',
       ghost:
         'text-n-blue-text hover:enabled:bg-n-alpha-2 focus-visible:bg-n-alpha-2 outline-transparent',
