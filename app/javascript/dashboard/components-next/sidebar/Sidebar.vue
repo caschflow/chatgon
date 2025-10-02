@@ -16,6 +16,7 @@ import SidebarProfileMenu from './SidebarProfileMenu.vue';
 import ChannelLeaf from './ChannelLeaf.vue';
 import SidebarAccountSwitcher from './SidebarAccountSwitcher.vue';
 import ComposeConversation from 'dashboard/components-next/NewConversation/ComposeConversation.vue';
+import logoThumbnail from 'dashboard/design-system/images/logo-thumbnail.svg';
 
 const props = defineProps({
   isMobileSidebarOpen: {
@@ -460,7 +461,7 @@ const menuItems = computed(() => {
       <div class="flex items-center min-w-0 gap-2 px-2">
         <div class="grid flex-shrink-0 size-6 place-content-center">
           <img
-            src="/brand-assets/logo-thumbnail.svg"
+            :src="logoThumbnail"
             alt="ChatGon"
             class="size-4"
           />
