@@ -16,7 +16,7 @@ import SidebarProfileMenu from './SidebarProfileMenu.vue';
 import ChannelLeaf from './ChannelLeaf.vue';
 import SidebarAccountSwitcher from './SidebarAccountSwitcher.vue';
 import ComposeConversation from 'dashboard/components-next/NewConversation/ComposeConversation.vue';
-import logoThumbnail from 'dashboard/design-system/images/logo-thumbnail.svg';
+import logoThumbnail from '../../../design-system/images/logo-thumbnail.svg';
 
 const props = defineProps({
   isMobileSidebarOpen: {
