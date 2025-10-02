@@ -1,5 +1,5 @@
 <div class="w-full">
-  <% regular_features, premium_features = SuperAdmin::AccountFeaturesHelper.partition_features(field.data) %>
+  <% regular_features, premium_features = SuperAdminHelpers::AccountFeaturesHelper.partition_features(field.data) %>
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
     <% regular_features.each do |key_array, val| %>

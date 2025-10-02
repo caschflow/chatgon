@@ -36,7 +36,7 @@
       <h3 class="h-5 leading-5 text-n-slate-12 font-medium text-base">Features</h3>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-2 gap-y-3">
-      <% SuperAdmin::FeaturesHelper.available_features.each do |feature, attrs| %>
+      <% SuperAdminHelpers::FeaturesHelper.available_features.each do |feature, attrs| %>
         <div class="group outline outline-1 outline-n-container p-4 rounded-lg relative shadow-sm">
           <span class="<%= attrs[:enabled] ? 'bg-green-400 text-white': 'bg-slate-300 text-slate-800' %> absolute rounded-full p-1 inline-flex right-4 top-5">
             <svg width="14" height="14"><use xlink:href="<%= attrs[:enabled] ? '#icon-tick-line': '#icon-lock-line' %>" /></svg>

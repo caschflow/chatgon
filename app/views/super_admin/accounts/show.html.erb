@@ -37,7 +37,7 @@ as well as a link to its edit page.
         <% if title.present? && title == 'all_features' %>
           <% regular_features, premium_features =
             attributes.partition do |attr|
-              !SuperAdmin::AccountFeaturesHelper.account_premium_features.include?(
+              !SuperAdminHelpers::AccountFeaturesHelper.account_premium_features.include?(
                 attr.data.keys.first,
               )
             end %>

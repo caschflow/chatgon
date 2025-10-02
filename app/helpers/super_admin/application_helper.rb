@@ -1,4 +1,4 @@
-module SuperAdmin
+module SuperAdminHelpers
   module ApplicationHelper
     def application_title
       'ChatGon'

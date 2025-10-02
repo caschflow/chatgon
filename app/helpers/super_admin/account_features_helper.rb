@@ -1,4 +1,5 @@
-module SuperAdmin::AccountFeaturesHelper
+module SuperAdminHelpers
+  module AccountFeaturesHelper
   def self.account_features
     YAML.safe_load(Rails.root.join('config/features.yml').read).freeze
   end
@@ -48,5 +49,6 @@ module SuperAdmin::AccountFeaturesHelper
   def self.filtered_features(features)
     regular, premium = partition_features(features)
     regular.merge(premium)
+  end
   end
 end
