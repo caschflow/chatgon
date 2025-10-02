@@ -153,4 +153,11 @@ COPY --from=pre-builder /app/.git_sha /app/.git_sha
 
 WORKDIR /app
 
+# Copy entrypoint scripts
+COPY docker/entrypoints /usr/local/entrypoints
+RUN chmod +x /usr/local/entrypoints/*.sh
+
 EXPOSE 3000
+
+ENTRYPOINT ["/usr/local/entrypoints/rails.sh"]
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
