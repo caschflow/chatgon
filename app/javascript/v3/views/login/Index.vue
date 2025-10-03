@@ -88,7 +88,7 @@ export default {
       return parseBoolean(window.chatwootConfig.signupEnabled);
     },
     showSamlLogin() {
-      return this.globalConfig.isEnterprise;
+      return false; // ChatGon: SSO disabled
     },
   },
   created() {
