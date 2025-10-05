@@ -41,10 +41,13 @@ LOGO_THUMBNAIL=/brand-assets/logo-thumbnail.svg
 DISABLE_TELEMETRY=true
 CHATGON_HUB_URL=https://chat.monexgon.app
 
+## Variables de Seguridad y Privacidad (IMPORTANTE)
+# Sistema privado - Registro solo vía Platform API
+ENABLE_ACCOUNT_SIGNUP=false
+CREATE_NEW_ACCOUNT_FROM_DASHBOARD=false
+
 ## Variables Opcionales (con valores por defecto)
 RAILS_MAX_THREADS=5
 SIDEKIQ_CONCURRENCY=10
 ACTIVE_STORAGE_SERVICE=local
-ENABLE_ACCOUNT_SIGNUP=true
-CREATE_NEW_ACCOUNT_FROM_DASHBOARD=true
 FORCE_SSL=false
