@@ -33,12 +33,43 @@ class Whatsapp::Providers::BaseService
 
   def process_response(response, message)
     parsed_response = response.parsed_response
+
     if response.success? && parsed_response['error'].blank?
-      parsed_response['messages'].first['id']
+      # Try different response formats from various WhatsApp providers
+      message_id = extract_message_id_from_response(parsed_response)
+
+      if message_id.present?
+        Rails.logger.info "[WhatsApp] Message sent successfully. ID: #{message_id}"
+        message_id
+      else
+        Rails.logger.warn "[WhatsApp] Success response but no message ID found: #{parsed_response.inspect}"
+        handle_error(response, message)
+        nil
+      end
     else
       handle_error(response, message)
       nil
     end
+  end
+
+  def extract_message_id_from_response(parsed_response)
+    # WhatsApp Business API / 360Dialog format: { "messages": [{ "id": "wamid.xxx" }] }
+    return parsed_response['messages']&.first&.dig('id') if parsed_response['messages'].present?
+
+    # Evolution API format: { "key": { "id": "xxx" } }
+    return parsed_response.dig('key', 'id') if parsed_response.dig('key', 'id').present?
+
+    # Evolution API alternative: { "id": "xxx" }
+    return parsed_response['id'] if parsed_response['id'].is_a?(String) && parsed_response['id'].present?
+
+    # Evolution API nested: { "message": { "key": { "id": "xxx" } } }
+    return parsed_response.dig('message', 'key', 'id') if parsed_response.dig('message', 'key', 'id').present?
+
+    # Baileys/Evolution v2: { "data": { "key": { "id": "xxx" } } }
+    return parsed_response.dig('data', 'key', 'id') if parsed_response.dig('data', 'key', 'id').present?
+
+    Rails.logger.debug "[WhatsApp] Could not extract message ID from: #{parsed_response.inspect}"
+    nil
   end
 
   def handle_error(response, message)
