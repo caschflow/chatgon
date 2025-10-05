@@ -1,5 +1,7 @@
 class Api::V1::Accounts::AgentsController < Api::V1::Accounts::BaseController
   before_action :fetch_agent, except: [:create, :index, :bulk_create]
+  before_action :check_dashboard_creation_enabled, only: [:create, :bulk_create]
+  before_action :check_dashboard_deletion_enabled, only: [:destroy]
   before_action :check_authorization
   before_action :validate_limit, only: [:create]
   before_action :validate_limit_for_bulk_create, only: [:bulk_create]
@@ -103,6 +105,18 @@ class Api::V1::Accounts::AgentsController < Api::V1::Accounts::BaseController
 
   def can_add_agent?
     available_agent_count.positive?
+  end
+
+  def check_dashboard_creation_enabled
+    return if GlobalConfig.get_value('CREATE_NEW_AGENT_FROM_DASHBOARD', 'true') == 'true'
+
+    raise ActionController::RoutingError, 'Not Found'
+  end
+
+  def check_dashboard_deletion_enabled
+    return if GlobalConfig.get_value('DELETE_AGENT_FROM_DASHBOARD', 'true') == 'true'
+
+    raise ActionController::RoutingError, 'Not Found'
   end
 
   def delete_user_record(agent)

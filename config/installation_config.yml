@@ -456,3 +456,18 @@
   locked: false
   description: 'Token expiry in days'
 ## ------ End of Customizations for Customers ------ ##
+
+## ------ Control de Gestión de Agentes desde Dashboard ------ ##
+- name: CREATE_NEW_AGENT_FROM_DASHBOARD
+  value: false
+  display_title: 'Create Agents from Dashboard'
+  description: 'Allow administrators to create new agents from the dashboard UI'
+  locked: false
+  type: boolean
+- name: DELETE_AGENT_FROM_DASHBOARD
+  value: false
+  display_title: 'Delete Agents from Dashboard'
+  description: 'Allow administrators to delete agents from the dashboard UI'
+  locked: false
+  type: boolean
+## ------ End of Control de Gestión de Agentes ------ ##
