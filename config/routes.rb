@@ -4,8 +4,7 @@ Rails.application.routes.draw do
     confirmations: 'devise_overrides/confirmations',
     passwords: 'devise_overrides/passwords',
     sessions: 'devise_overrides/sessions',
-    token_validations: 'devise_overrides/token_validations',
-    omniauth_callbacks: 'devise_overrides/omniauth_callbacks'
+    token_validations: 'devise_overrides/token_validations'
   }, via: [:get, :post]
 
   ## renders the frontend paths only if its not an api only server
@@ -37,7 +36,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       # ----------------------------------
       # start of account scoped api routes
-      resources :accounts, only: [:create, :show, :update] do
+      resources :accounts, only: [:show, :update] do
         member do
           post :update_active_at
           get :cache_keys
@@ -325,9 +324,6 @@ Rails.application.routes.draw do
         resources :webhooks, only: [:create]
       end
 
-      # Frontend API endpoint to trigger SAML authentication flow
-      post 'auth/saml_login', to: 'auth#saml_login'
-
       resource :profile, only: [:show, :update] do
         delete :avatar, on: :collection
         member do
@@ -384,7 +380,7 @@ Rails.application.routes.draw do
     end
 
     namespace :v2 do
-      resources :accounts, only: [:create] do
+      resources :accounts, only: [] do
         scope module: :accounts do
           resources :summary_reports, only: [] do
             collection do

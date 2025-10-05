@@ -57,15 +57,13 @@ class User < ApplicationRecord
   include UserAttributeHelpers
 
   devise :database_authenticatable,
-         :registerable,
          :recoverable,
          :rememberable,
          :trackable,
          :validatable,
          :confirmable,
          :password_has_required_content,
-         :two_factor_authenticatable,
-         :omniauthable, omniauth_providers: [:google_oauth2, :saml]
+         :two_factor_authenticatable
 
   # TODO: remove in a future version once online status is moved to account users
   # remove the column availability from users

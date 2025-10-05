@@ -11,9 +11,7 @@ import SessionStorage from 'shared/helpers/sessionStorage';
 import { useBranding } from 'shared/composables/useBranding';
 
 // components
-import SimpleDivider from '../../components/Divider/SimpleDivider.vue';
 import FormInput from '../../components/Form/Input.vue';
-import GoogleOAuthButton from '../../components/GoogleOauth/Button.vue';
 import Spinner from 'shared/components/Spinner.vue';
 import NextButton from 'dashboard/components-next/button/Button.vue';
 import MfaVerification from 'dashboard/components/auth/MfaVerification.vue';
@@ -28,16 +26,11 @@ const IMPERSONATION_URL_SEARCH_KEY = 'impersonation';
 export default {
   components: {
     FormInput,
-    GoogleOAuthButton,
     Spinner,
     NextButton,
-    SimpleDivider,
     MfaVerification,
   },
   props: {
-    ssoAuthToken: { type: String, default: '' },
-    ssoAccountId: { type: String, default: '' },
-    ssoConversationId: { type: String, default: '' },
     email: { type: String, default: '' },
     authError: { type: String, default: '' },
   },
@@ -81,20 +74,8 @@ export default {
   },
   computed: {
     ...mapGetters({ globalConfig: 'globalConfig/get' }),
-    showGoogleOAuth() {
-      return Boolean(window.chatwootConfig.googleOAuthClientId);
-    },
-    showSignupLink() {
-      return parseBoolean(window.chatwootConfig.signupEnabled);
-    },
-    showSamlLogin() {
-      return false; // ChatGon: SSO disabled
-    },
   },
   created() {
-    if (this.ssoAuthToken) {
-      this.submitLogin();
-    }
     if (this.authError) {
       const messageKey = ERROR_MESSAGES[this.authError] ?? 'LOGIN.API.UNAUTH';
       // Use a method to get the translated text to avoid dynamic key warning
@@ -157,9 +138,6 @@ export default {
           ? decodeURIComponent(this.email)
           : this.credentials.email,
         password: this.credentials.password,
-        sso_auth_token: this.ssoAuthToken,
-        ssoAccountId: this.ssoAccountId,
-        ssoConversationId: this.ssoConversationId,
       };
 
       login(credentials)
@@ -228,12 +206,6 @@ export default {
       <h2 class="mt-6 text-3xl font-medium text-center text-n-slate-12">
         {{ replaceInstallationName($t('LOGIN.TITLE')) }}
       </h2>
-      <p v-if="showSignupLink" class="mt-3 text-sm text-center text-n-slate-11">
-        {{ $t('COMMON.OR') }}
-        <router-link to="auth/signup" class="lowercase text-link text-n-brand">
-          {{ $t('LOGIN.CREATE_NEW_ACCOUNT') }}
-        </router-link>
-      </p>
     </section>
 
     <!-- MFA Verification Section -->
@@ -250,30 +222,10 @@ export default {
       v-else
       class="bg-white shadow sm:mx-auto mt-11 sm:w-full sm:max-w-lg dark:bg-n-solid-2 p-11 sm:shadow-lg sm:rounded-lg"
       :class="{
-        'mb-8 mt-15': !showGoogleOAuth,
         'animate-wiggle': loginApi.hasErrored,
       }"
     >
       <div v-if="!email">
-        <div class="flex flex-col">
-          <GoogleOAuthButton v-if="showGoogleOAuth" />
-          <div v-if="showSamlLogin" class="mt-4 text-center">
-            <router-link
-              to="/app/login/sso"
-              class="inline-flex justify-center w-full px-4 py-3 bg-n-background dark:bg-n-solid-3 rounded-md shadow-sm ring-1 ring-inset ring-n-container dark:ring-n-container focus:outline-offset-0 hover:bg-n-alpha-2 dark:hover:bg-n-alpha-2"
-            >
-              <span class="i-lucide-key h-6 text-n-slate-11" />
-              <span class="ml-2 text-base font-medium text-n-slate-12">
-                {{ $t('LOGIN.SAML.LABEL') }}
-              </span>
-            </router-link>
-          </div>
-          <SimpleDivider
-            v-if="showGoogleOAuth || showSamlLogin"
-            :label="$t('COMMON.OR')"
-            class="uppercase"
-          />
-        </div>
         <form class="space-y-5" @submit.prevent="submitFormLogin">
           <FormInput
             v-model="credentials.email"
