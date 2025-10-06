@@ -36,6 +36,7 @@ const { accountScopedRoute } = useAccount();
 const store = useStore();
 const searchShortcut = useKbd([`$mod`, 'k']);
 const { t } = useI18n();
+const currentUser = useMapGetter('getCurrentUser');
 
 const toggleShortcutModalFn = show => {
   if (show) {
@@ -120,7 +121,7 @@ const newReportRoutes = () => [
 const reportRoutes = computed(() => newReportRoutes());
 
 const menuItems = computed(() => {
-  return [
+  const allItems = [
     {
       name: 'Inbox',
       label: t('SIDEBAR.INBOX'),
@@ -440,6 +441,14 @@ const menuItems = computed(() => {
       ],
     },
   ];
+
+  // Filter out Captain menu for non-SuperAdmin users
+  return allItems.filter(item => {
+    if (item.name === 'Captain') {
+      return currentUser.value.type === 'SuperAdmin';
+    }
+    return true;
+  });
 });
 </script>
 
