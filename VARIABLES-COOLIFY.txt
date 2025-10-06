@@ -1,0 +1,126 @@
+# ========================================
+# ChatGon - Variables para Coolify
+# ========================================
+# Copia y pega estas variables en la sección Environment Variables de Coolify
+# IMPORTANTE: Reemplaza los valores marcados con <GENERAR>
+
+# ========================================
+# PASO 1: GENERAR VALORES SEGUROS
+# ========================================
+# Ejecuta estos comandos ANTES de continuar:
+#
+# Para SECRET_KEY_BASE:
+#   openssl rand -base64 64
+#
+# Para contraseñas (ejecuta 3-4 veces):
+#   openssl rand -base64 32
+#
+# Copia los valores generados y úsalos abajo
+
+# ========================================
+# OBLIGATORIAS - SEGURIDAD
+# ========================================
+
+SECRET_KEY_BASE=<GENERAR_CON_OPENSSL_64_CHARS>
+
+# ========================================
+# OBLIGATORIAS - APLICACIÓN
+# ========================================
+
+FRONTEND_URL=https://chat.monexgon.app
+
+# ========================================
+# OBLIGATORIAS - BASE DE DATOS
+# ========================================
+
+POSTGRES_DATABASE=chatgon_production
+POSTGRES_USERNAME=chatgon_user
+POSTGRES_PASSWORD=<GENERAR_CON_OPENSSL_32_CHARS>
+
+# ========================================
+# OBLIGATORIAS - REDIS
+# ========================================
+
+REDIS_PASSWORD=<GENERAR_CON_OPENSSL_32_CHARS>
+
+# ========================================
+# BRAND - ChatGon (COPIAR TAL CUAL)
+# ========================================
+
+INSTALLATION_NAME=ChatGon
+BRAND_NAME=ChatGon
+BRAND_URL=https://chat.monexgon.app
+WIDGET_BRAND_URL=https://chat.monexgon.app
+BRAND_COLOR=#2781F6
+LOGO=/brand-assets/logo-cg.svg
+LOGO_DARK=/brand-assets/logo-dark.svg
+LOGO_THUMBNAIL=/brand-assets/logo-thumbnail.svg
+DISPLAY_MANIFEST=false
+
+# ========================================
+# SEGURIDAD - Sistema Privado (COPIAR TAL CUAL)
+# ========================================
+
+ENABLE_ACCOUNT_SIGNUP=false
+CREATE_NEW_ACCOUNT_FROM_DASHBOARD=false
+CREATE_NEW_AGENT_FROM_DASHBOARD=false
+DELETE_AGENT_FROM_DASHBOARD=false
+DISABLE_TELEMETRY=true
+DEPLOYMENT_ENV=self-hosted
+INSTALLATION_PRICING_PLAN=enterprise
+
+# ========================================
+# CONFIGURACIÓN GENERAL (COPIAR TAL CUAL)
+# ========================================
+
+DEFAULT_LOCALE=es
+FORCE_SSL=false
+ACTIVE_STORAGE_SERVICE=local
+RAILS_MAX_THREADS=5
+SIDEKIQ_CONCURRENCY=10
+
+# ========================================
+# EMAIL (OPCIONAL - Configura si quieres enviar emails)
+# ========================================
+
+MAILER_SENDER_EMAIL=ChatGon <admin@monexgon.app>
+SMTP_DOMAIN=monexgon.app
+SMTP_ADDRESS=smtp.hostinger.com
+SMTP_PORT=587
+SMTP_USERNAME=admin@monexgon.app
+SMTP_PASSWORD=<TU_PASSWORD_SMTP>
+SMTP_AUTHENTICATION=login
+SMTP_ENABLE_STARTTLS_AUTO=true
+SMTP_OPENSSL_VERIFY_MODE=peer
+MAILER_INBOUND_EMAIL_DOMAIN=chat.monexgon.app
+RAILS_INBOUND_EMAIL_SERVICE=relay
+RAILS_INBOUND_EMAIL_PASSWORD=<GENERAR_CON_OPENSSL_32_CHARS>
+
+# ========================================
+# MOBILE APP (OPCIONAL - Solo si tienes apps móviles)
+# ========================================
+
+IOS_APP_ID=L7YLMN4634.com.chatgon.app
+ANDROID_BUNDLE_ID=com.chatgon.app
+ANDROID_SHA256_CERT_FINGERPRINT=AC:73:8E:DE:EB:56:EA:CC:10:87:02:A7:65:37:7B:38:D4:5D:D4:53:F8:3B:FB:D3:C6:28:64:1D:AA:08:1E:D8
+ENABLE_PUSH_RELAY_SERVER=true
+
+# ========================================
+# INSTRUCCIONES PARA COOLIFY
+# ========================================
+#
+# 1. En Coolify, ve a tu proyecto > Environment Variables
+# 2. Agrega cada variable usando el formato: NOMBRE=valor
+# 3. NO incluyas espacios alrededor del signo =
+# 4. NO incluyas comillas a menos que se especifique
+#
+# Variables MÍNIMAS OBLIGATORIAS:
+#   - SECRET_KEY_BASE
+#   - FRONTEND_URL
+#   - POSTGRES_DATABASE
+#   - POSTGRES_USERNAME
+#   - POSTGRES_PASSWORD
+#   - REDIS_PASSWORD
+#   + Todas las de Brand y Seguridad
+#
+# ========================================
