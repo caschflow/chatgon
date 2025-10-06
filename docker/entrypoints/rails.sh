@@ -20,17 +20,10 @@ done
 
 echo "Database ready to accept connections."
 
-# Wait for setup service to complete (in production)
+# Setup service completion is guaranteed by docker-compose depends_on
+# No need to check for marker file as containers don't share /tmp filesystem
 if [ "$RAILS_ENV" = "production" ]; then
-  echo "Waiting for ChatGon setup service to complete..."
-
-  # Wait for setup marker file (created by setup.sh)
-  while [ ! -f /tmp/chatgon-setup-complete ]; do
-    echo "Setup service not completed yet, waiting..."
-    sleep 2
-  done
-
-  echo "✓ Setup service completed. Starting Rails server..."
+  echo "✓ Setup service already completed (guaranteed by depends_on). Starting Rails server..."
 fi
 
 # Install missing gems for local dev as we are using base image compiled for production

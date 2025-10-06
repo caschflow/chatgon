@@ -78,7 +78,4 @@ echo "  - All features enabled"
 echo "  - Security settings applied"
 echo "=========================================="
 
-# Create a marker file to indicate setup is complete
-touch /tmp/chatgon-setup-complete
-
-echo "Setup service completed. Ready for Rails and Sidekiq to start."
+echo "Setup service completed. Rails and Sidekiq will start automatically."
