@@ -9,6 +9,54 @@ x-base: &base
     - public_data:/app/public
 
 services:
+  # Setup service: Runs migrations and Brand configuration
+  # This service runs once and exits
+  setup:
+    <<: *base
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # Rails
+      - RAILS_ENV=production
+      - NODE_ENV=production
+      - INSTALLATION_ENV=docker
+      - RAILS_LOG_TO_STDOUT=true
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE:?Secret key base required}
+      - FRONTEND_URL=${FRONTEND_URL:?Frontend URL required}
+      - DEFAULT_LOCALE=${DEFAULT_LOCALE:-es}
+
+      # ChatGon Independent Configuration
+      - DISABLE_TELEMETRY=true
+      - DEPLOYMENT_ENV=self-hosted
+      - INSTALLATION_PRICING_PLAN=enterprise
+
+      # PostgreSQL
+      - DATABASE_URL=${DATABASE_URL}
+      - POSTGRES_HOST=${POSTGRES_HOST:-postgres}
+      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
+      - POSTGRES_DATABASE=${POSTGRES_DATABASE:-chatwoot}
+      - POSTGRES_USERNAME=${POSTGRES_USERNAME:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
+      # Redis
+      - REDIS_URL=redis://redis:6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+
+      # Branding
+      - INSTALLATION_NAME=${INSTALLATION_NAME:-ChatGon}
+      - BRAND_NAME=${BRAND_NAME:-ChatGon}
+      - BRAND_URL=${BRAND_URL}
+      - WIDGET_BRAND_URL=${WIDGET_BRAND_URL}
+      - BRAND_COLOR=${BRAND_COLOR:-#2781F6}
+      - LOGO=${LOGO:-/brand-assets/logo-cg.svg}
+      - LOGO_DARK=${LOGO_DARK:-/brand-assets/logo-dark.svg}
+      - LOGO_THUMBNAIL=${LOGO_THUMBNAIL:-/brand-assets/logo-thumbnail.svg}
+    entrypoint: /usr/local/entrypoints/setup.sh
+    restart: on-failure
+
   rails:
     <<: *base
     depends_on:
@@ -16,6 +64,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      setup:
+        condition: service_completed_successfully
     ports:
       - '3000:3000'
     labels:
@@ -102,6 +152,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      setup:
+        condition: service_completed_successfully
     environment:
       # Rails
       - RAILS_ENV=production

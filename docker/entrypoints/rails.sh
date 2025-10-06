@@ -20,7 +20,20 @@ done
 
 echo "Database ready to accept connections."
 
-#install missing gems for local dev as we are using base image compiled for production
+# Wait for setup service to complete (in production)
+if [ "$RAILS_ENV" = "production" ]; then
+  echo "Waiting for ChatGon setup service to complete..."
+
+  # Wait for setup marker file (created by setup.sh)
+  while [ ! -f /tmp/chatgon-setup-complete ]; do
+    echo "Setup service not completed yet, waiting..."
+    sleep 2
+  done
+
+  echo "✓ Setup service completed. Starting Rails server..."
+fi
+
+# Install missing gems for local dev as we are using base image compiled for production
 bundle install
 
 BUNDLE="bundle check"
@@ -30,8 +43,9 @@ do
   sleep 2;
 done
 
-# Run database migrations (only if RAILS_ENV is production)
-if [ "$RAILS_ENV" = "production" ]; then
+# Run database migrations and brand setup (only if RAILS_ENV is NOT production)
+# In production, this is handled by the setup service
+if [ "$RAILS_ENV" != "production" ]; then
   echo "Running database migrations..."
   bundle exec rails db:prepare
   echo "Database migrated successfully."
