@@ -3,7 +3,10 @@
 ## Variables Obligatorias
 
 ### Seguridad
-SECRET_KEY_BASE=[openssl rand -hex 64]
+```bash
+# Generar con: openssl rand -hex 64
+SECRET_KEY_BASE=<64_caracteres_hex_aleatorios>
+```
 
 ### Base de Datos
 
@@ -56,8 +59,12 @@ LOGO_DARK=/brand-assets/logo-dark.svg
 LOGO_THUMBNAIL=/brand-assets/logo-thumbnail.svg
 
 ## Variables de Independencia (Obligatorias)
+```bash
 DISABLE_TELEMETRY=true
-CHATGON_HUB_URL=https://chat.monexgon.app
+
+# Nota: CHATGON_HUB_URL se configura automáticamente con el valor de FRONTEND_URL
+# No es necesario configurar esta variable manualmente
+```
 
 ## Variables de Seguridad y Privacidad (IMPORTANTE)
 # Sistema privado - Registro solo vía Platform API
@@ -69,7 +76,26 @@ CREATE_NEW_AGENT_FROM_DASHBOARD=false
 DELETE_AGENT_FROM_DASHBOARD=false
 
 ## Variables Opcionales (con valores por defecto)
+
+### Performance
+```bash
 RAILS_MAX_THREADS=5
 SIDEKIQ_CONCURRENCY=10
-ACTIVE_STORAGE_SERVICE=local
-FORCE_SSL=false
+```
+
+### API Configuration
+```bash
+API_RATE_LIMIT=1000
+API_ACCESS_TOKEN_EXPIRY=24  # Horas
+```
+
+### Storage y SSL
+```bash
+# Estas variables ya tienen valores por defecto en docker-compose
+# No es necesario configurarlas a menos que quieras cambiarlas
+
+# ACTIVE_STORAGE_SERVICE=local (por defecto)
+# FORCE_SSL=false (por defecto)
+# DISPLAY_MANIFEST=false (por defecto)
+# CORS_ORIGINS se configura automáticamente con FRONTEND_URL
+```
