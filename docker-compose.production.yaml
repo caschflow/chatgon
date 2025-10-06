@@ -1,14 +1,14 @@
 version: '3.8'
 
-services:
-  base: &base
-    build:
-      context: .
-      dockerfile: docker/Dockerfile
-    volumes:
-      - storage_data:/app/storage
-      - public_data:/app/public
+x-base: &base
+  build:
+    context: .
+    dockerfile: docker/Dockerfile
+  volumes:
+    - storage_data:/app/storage
+    - public_data:/app/public
 
+services:
   rails:
     <<: *base
     depends_on:
