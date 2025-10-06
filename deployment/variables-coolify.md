@@ -46,6 +46,10 @@ CHATGON_HUB_URL=https://chat.monexgon.app
 ENABLE_ACCOUNT_SIGNUP=false
 CREATE_NEW_ACCOUNT_FROM_DASHBOARD=false
 
+# Gestión de Agentes solo desde Platform API
+CREATE_NEW_AGENT_FROM_DASHBOARD=false
+DELETE_AGENT_FROM_DASHBOARD=false
+
 ## Variables Opcionales (con valores por defecto)
 RAILS_MAX_THREADS=5
 SIDEKIQ_CONCURRENCY=10
