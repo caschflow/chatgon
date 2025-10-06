@@ -265,3 +265,5 @@ const tailwindConfig = {
 };
 
 module.exports = tailwindConfig;
+
+// Force rebuild: 2025-10-06 - Captain menu fix for SuperAdmin only
