@@ -30,5 +30,16 @@ do
   sleep 2;
 done
 
+# Run database migrations (only if RAILS_ENV is production)
+if [ "$RAILS_ENV" = "production" ]; then
+  echo "Running database migrations..."
+  bundle exec rails db:prepare
+  echo "Database migrated successfully."
+
+  echo "Running brand setup..."
+  bundle exec rails runner bin/setup_brand.rb
+  echo "Brand setup completed."
+fi
+
 # Execute the main process of the container
 exec "$@"

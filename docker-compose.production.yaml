@@ -9,63 +9,6 @@ services:
       - storage_data:/app/storage
       - public_data:/app/public
 
-  # Servicio de migración (se ejecuta primero)
-  migrate:
-    <<: *base
-    environment:
-      - RAILS_ENV=production
-      - SECRET_KEY_BASE=${SECRET_KEY_BASE:?Secret key base required}
-      # Database connection (DATABASE_URL takes precedence over individual vars)
-      - DATABASE_URL=${DATABASE_URL}
-      - POSTGRES_HOST=${POSTGRES_HOST:-postgres}
-      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
-      - POSTGRES_DATABASE=${POSTGRES_DATABASE:-chatwoot}
-      - POSTGRES_USERNAME=${POSTGRES_USERNAME:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - REDIS_URL=redis://redis:6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    command: ['bundle', 'exec', 'rails', 'db:prepare']
-    restart: "no"
-
-  # Servicio de configuración de brand (se ejecuta después de migrate)
-  brand-setup:
-    <<: *base
-    environment:
-      - RAILS_ENV=production
-      - SECRET_KEY_BASE=${SECRET_KEY_BASE:?Secret key base required}
-      # Database connection (DATABASE_URL takes precedence over individual vars)
-      - DATABASE_URL=${DATABASE_URL}
-      - POSTGRES_HOST=${POSTGRES_HOST:-postgres}
-      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
-      - POSTGRES_DATABASE=${POSTGRES_DATABASE:-chatwoot}
-      - POSTGRES_USERNAME=${POSTGRES_USERNAME:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - REDIS_URL=redis://redis:6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      # Branding Configuration
-      - INSTALLATION_NAME=${INSTALLATION_NAME:-ChatGon}
-      - BRAND_NAME=${BRAND_NAME:-ChatGon}
-      - BRAND_URL=${BRAND_URL}
-      - WIDGET_BRAND_URL=${WIDGET_BRAND_URL}
-      - BRAND_COLOR=${BRAND_COLOR:-#2781F6}
-      - LOGO=${LOGO:-/brand-assets/logo-cg.svg}
-      - LOGO_DARK=${LOGO_DARK:-/brand-assets/logo-dark.svg}
-      - LOGO_THUMBNAIL=${LOGO_THUMBNAIL:-/brand-assets/logo-thumbnail.svg}
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      migrate:
-        condition: service_completed_successfully
-    command: ['bundle', 'exec', 'rails', 'runner', 'bin/setup_brand.rb']
-    restart: "no"
-
   rails:
     <<: *base
     depends_on:
@@ -73,10 +16,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      migrate:
-        condition: service_completed_successfully
-      brand-setup:
-        condition: service_completed_successfully
     ports:
       - '3000:3000'
     labels:
@@ -163,10 +102,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      migrate:
-        condition: service_completed_successfully
-      brand-setup:
-        condition: service_completed_successfully
     environment:
       # Rails
       - RAILS_ENV=production
