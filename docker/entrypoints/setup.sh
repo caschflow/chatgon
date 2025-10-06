@@ -21,7 +21,8 @@ done
 echo "✓ PostgreSQL is ready"
 
 echo "Waiting for Redis to be ready..."
-until redis-cli -h redis -p 6379 ${REDIS_PASSWORD:+-a $REDIS_PASSWORD} ping > /dev/null 2>&1
+# Using nc (netcat) instead of redis-cli since redis-cli is not installed in Rails image
+until nc -z redis 6379 > /dev/null 2>&1
 do
   echo "Redis not ready, waiting..."
   sleep 2;
