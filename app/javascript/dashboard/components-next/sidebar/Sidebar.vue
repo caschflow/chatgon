@@ -445,7 +445,7 @@ const menuItems = computed(() => {
   // Filter out Captain menu for non-SuperAdmin users
   return allItems.filter(item => {
     if (item.name === 'Captain') {
-      return currentUser.value.type === 'SuperAdmin';
+      return currentUser.value?.type === 'SuperAdmin';
     }
     return true;
   });
