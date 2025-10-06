@@ -6,9 +6,27 @@
 SECRET_KEY_BASE=[openssl rand -hex 64]
 
 ### Base de Datos
+
+**Opción A: DATABASE_URL (RECOMENDADO - para passwords con caracteres especiales)**
+```bash
+# Si tu password contiene caracteres especiales (+, =, @, etc.),
+# usa DATABASE_URL con URL encoding:
+# + → %2B
+# = → %3D
+# @ → %40
+DATABASE_URL=postgresql://usuario:password_url_encoded@postgres:5432/database_name
+```
+
+**Opción B: Variables Individuales (solo si password no tiene caracteres especiales)**
+```bash
 POSTGRES_USERNAME=chatgon_user
-POSTGRES_PASSWORD=[password seguro]
+POSTGRES_PASSWORD=[password seguro sin +, =, @]
 POSTGRES_DATABASE=chatgon_production
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+```
+
+**Nota:** DATABASE_URL tiene precedencia sobre las variables individuales.
 
 ### Redis
 REDIS_PASSWORD=[password seguro]

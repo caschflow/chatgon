@@ -15,11 +15,13 @@ services:
     environment:
       - RAILS_ENV=production
       - SECRET_KEY_BASE=${SECRET_KEY_BASE:?Secret key base required}
-      - POSTGRES_HOST=postgres
-      - POSTGRES_PORT=5432
+      # Database connection (DATABASE_URL takes precedence over individual vars)
+      - DATABASE_URL=${DATABASE_URL}
+      - POSTGRES_HOST=${POSTGRES_HOST:-postgres}
+      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
       - POSTGRES_DATABASE=${POSTGRES_DATABASE:-chatwoot}
       - POSTGRES_USERNAME=${POSTGRES_USERNAME:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?Database password required}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - REDIS_URL=redis://redis:6379
       - REDIS_PASSWORD=${REDIS_PASSWORD}
     depends_on:
@@ -36,11 +38,13 @@ services:
     environment:
       - RAILS_ENV=production
       - SECRET_KEY_BASE=${SECRET_KEY_BASE:?Secret key base required}
-      - POSTGRES_HOST=postgres
-      - POSTGRES_PORT=5432
+      # Database connection (DATABASE_URL takes precedence over individual vars)
+      - DATABASE_URL=${DATABASE_URL}
+      - POSTGRES_HOST=${POSTGRES_HOST:-postgres}
+      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
       - POSTGRES_DATABASE=${POSTGRES_DATABASE:-chatwoot}
       - POSTGRES_USERNAME=${POSTGRES_USERNAME:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?Database password required}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - REDIS_URL=redis://redis:6379
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       # Branding Configuration
@@ -103,12 +107,13 @@ services:
       - DEPLOYMENT_ENV=self-hosted
       - INSTALLATION_PRICING_PLAN=enterprise
 
-      # PostgreSQL
-      - POSTGRES_HOST=postgres
-      - POSTGRES_PORT=5432
+      # PostgreSQL (DATABASE_URL takes precedence over individual vars)
+      - DATABASE_URL=${DATABASE_URL}
+      - POSTGRES_HOST=${POSTGRES_HOST:-postgres}
+      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
       - POSTGRES_DATABASE=${POSTGRES_DATABASE:-chatwoot}
       - POSTGRES_USERNAME=${POSTGRES_USERNAME:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?Database password required}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
       # Redis
       - REDIS_URL=redis://redis:6379
@@ -176,12 +181,13 @@ services:
       - DEPLOYMENT_ENV=self-hosted
       - INSTALLATION_PRICING_PLAN=enterprise
 
-      # PostgreSQL
-      - POSTGRES_HOST=postgres
-      - POSTGRES_PORT=5432
+      # PostgreSQL (DATABASE_URL takes precedence over individual vars)
+      - DATABASE_URL=${DATABASE_URL}
+      - POSTGRES_HOST=${POSTGRES_HOST:-postgres}
+      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
       - POSTGRES_DATABASE=${POSTGRES_DATABASE:-chatwoot}
       - POSTGRES_USERNAME=${POSTGRES_USERNAME:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?Database password required}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
       # Redis
       - REDIS_URL=redis://redis:6379
