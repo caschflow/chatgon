@@ -20,6 +20,14 @@ configs = {
   'INSTALLATION_PRICING_PLAN_QUANTITY' => '999999'
 }
 
+# Configure security settings (private system)
+security_configs = {
+  'ENABLE_ACCOUNT_SIGNUP' => ENV.fetch('ENABLE_ACCOUNT_SIGNUP', 'false'),
+  'CREATE_NEW_ACCOUNT_FROM_DASHBOARD' => ENV.fetch('CREATE_NEW_ACCOUNT_FROM_DASHBOARD', 'false'),
+  'CREATE_NEW_AGENT_FROM_DASHBOARD' => ENV.fetch('CREATE_NEW_AGENT_FROM_DASHBOARD', 'false'),
+  'DELETE_AGENT_FROM_DASHBOARD' => ENV.fetch('DELETE_AGENT_FROM_DASHBOARD', 'false')
+}
+
 configs.each do |key, value|
   next unless value.present?
 
@@ -28,6 +36,15 @@ configs.each do |key, value|
   config.locked = false if %w[BRAND_COLOR INSTALLATION_PRICING_PLAN].include?(key)
   config.save!
   puts "✓ Updated #{key} to #{value}"
+end
+
+# Apply security settings
+security_configs.each do |key, value|
+  config = InstallationConfig.find_or_initialize_by(name: key)
+  config.value = value
+  config.locked = false
+  config.save!
+  puts "✓ Security: #{key} = #{value}"
 end
 
 # Enable all features (bypass premium restrictions)
@@ -64,4 +81,5 @@ puts '========================================='
 puts '✓ Brand configuration completed successfully'
 puts '✓ ChatGon configured as independent installation'
 puts '✓ All enterprise features enabled'
+puts '✓ Security settings applied (private system)'
 puts '========================================='
